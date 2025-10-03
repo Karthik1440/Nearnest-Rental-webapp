@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import User, Property, Amenity, PropertyImage
 
 
@@ -10,8 +11,8 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('id', 'property_name', 'owner_name', 'monthly_rent', 'city', 'created_at')
-    search_fields = ('property_name', 'owner_name', 'city')
+    list_display = ('id', 'property_name', 'owner_name', 'monthly_rent', 'city','category', 'created_at',)
+    search_fields = ('property_name', 'owner_name', 'city','category',)
     list_filter = ('city',)
 
 
@@ -24,3 +25,10 @@ class AmenityAdmin(admin.ModelAdmin):
 @admin.register(PropertyImage)
 class PropertyImageAdmin(admin.ModelAdmin):
     list_display = ('id', 'property', 'image_url')
+
+    def image_preview(self, obj):
+        if obj.image_url:
+            return format_html('<img src="{}" width="100" height="auto" />', obj.image_url.url)
+        return "No Image"
+
+    image_preview.short_description = 'Image'
